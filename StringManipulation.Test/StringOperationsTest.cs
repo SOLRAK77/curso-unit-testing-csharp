@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Moq;
 
 namespace StringManipulation.Tests
 {
@@ -121,6 +124,33 @@ namespace StringManipulation.Tests
             var result = stringOperations.FromRomanToNumber(input);
             // Assert
             Assert.Equal(expected, result);
+        }
+
+
+        [Fact]
+        public void CountOccurrences()
+        {
+            // Arrange
+            var logger = new Mock<ILogger<StringOperations>>();
+            var stringOperations = new StringOperations(logger.Object);
+
+            // Act
+            var result = stringOperations.CountOccurrences("abracadabra", 'a');
+            // Assert
+            Assert.Equal(5, result);
+        }
+
+        [Fact]
+        public void ReadFile()
+        {
+            // Arrange
+            var stringOperations = new StringOperations();
+            var moqFileReading = new Mock<IFileReaderConector>();
+            moqFileReading.Setup(fr => fr.ReadString("test.txt")).Returns("This is a test file.");
+            // Act
+            var result = stringOperations.ReadFile(moqFileReading.Object, "test.txt");
+            // Assert
+            Assert.Equal("This is a test file.", result);
         }
     }
 }
